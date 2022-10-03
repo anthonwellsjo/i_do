@@ -6,10 +6,7 @@ use cursive::Cursive;
 pub fn create_app() -> Cursive {
     let mut siv = Cursive::default();
 
-    let select = SelectView::<String>::new()
-        .on_submit(on_submit)
-        .with_name("select")
-        .fixed_size((10, 5));
+    let select = ui::get_select_view(on_submit);
 
     let buttons = LinearLayout::vertical()
         .child(Button::new("Add new", add_name))
