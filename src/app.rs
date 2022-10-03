@@ -48,9 +48,7 @@ fn add_name(s: &mut Cursive) {
             .title("Add user")
             .button("OK", |s| {
                 let name = s
-                    .call_on_name("user_name", |view: &mut EditView| {
-                        view.get_content()
-                    })
+                    .call_on_name("user_name", |view: &mut EditView| view.get_content())
                     .unwrap();
                 ok(s, &name);
             })
