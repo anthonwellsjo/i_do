@@ -4,8 +4,7 @@ use cursive::views::{Dialog, EditView, SelectView};
 use cursive::Cursive;
 
 pub fn create_app() -> Cursive {
-    let mut siv = Cursive::default();
-
+    let mut siv: Cursive = Cursive::default();
     let select = ui::get_select_view(on_submit);
 
     let buttons = LinearLayout::vertical()
