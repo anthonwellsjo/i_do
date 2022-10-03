@@ -1,6 +1,6 @@
 pub mod ui;
 use cursive::view::{Nameable, Resizable};
-use cursive::views::{Button, Dialog, DummyView, EditView, LinearLayout, SelectView};
+use cursive::views::{Dialog, EditView, SelectView};
 use cursive::Cursive;
 
 pub fn create_app() -> Cursive {
