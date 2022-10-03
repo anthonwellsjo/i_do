@@ -6,23 +6,8 @@ use cursive::Cursive;
 pub fn create_app() -> Cursive {
     let mut siv: Cursive = Cursive::default();
     let select = ui::get_select_view(on_submit);
-
-    let buttons = LinearLayout::vertical()
-        .child(Button::new("Add new", add_name))
-        .child(Button::new("Delete", delete_name))
-        .child(DummyView)
-        .child(Button::new("Quit", Cursive::quit));
-
-    siv.add_layer(
-        Dialog::around(
-            LinearLayout::horizontal()
-                .child(select)
-                .child(DummyView)
-                .child(buttons),
-        )
-        .title("Select a user"),
-    );
-
+    let buttons = ui::get_buttons(add_name, delete_name);
+    ui::compose_app_ui(&mut siv, select, buttons);
     return siv;
 }
 
