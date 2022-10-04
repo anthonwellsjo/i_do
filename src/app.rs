@@ -1,4 +1,5 @@
-pub mod ui;
+mod ui;
+mod db;
 use cursive::view::{Nameable, Resizable};
 use cursive::views::{Dialog, EditView, SelectView};
 use cursive::Cursive;
