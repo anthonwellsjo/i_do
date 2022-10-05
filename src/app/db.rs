@@ -1,8 +1,8 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
-struct Person {
-    name: String,
-    age: u8,
+struct ToDo {
+    title: String,
+    descriptions: String,
     phones: Vec<String>,
 }
