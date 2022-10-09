@@ -1,6 +1,6 @@
-mod app;
+mod core;
 
 fn main() {
-    let mut app = create_app();
+    let app = core::App::new();
     app.run();
 }
