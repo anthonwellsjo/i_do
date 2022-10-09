@@ -1,6 +1,10 @@
 use cursive::view::{Nameable, Resizable};
-use cursive::views::{Button, Dialog, DummyView, LinearLayout, NamedView, ResizedView, SelectView, EditView};
+use cursive::views::{
+    Button, Dialog, DummyView, EditView, LinearLayout, NamedView, ResizedView, SelectView,
+};
 use cursive::Cursive;
+
+use super::db;
 
 pub fn get_select_view(
     on_submit: fn(s: &mut Cursive, name: &str),
@@ -58,6 +62,7 @@ fn on_submit(s: &mut Cursive, name: &str) {
 fn add_name(s: &mut Cursive) {
     fn ok(s: &mut Cursive, name: &str) {
         s.call_on_name("select", |view: &mut SelectView<String>| {
+            db::save_todo(db::ToDo::new(name));
             view.add_item_str(name);
         });
         s.pop_layer();

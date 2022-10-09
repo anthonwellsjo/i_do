@@ -1,36 +1,40 @@
 use serde::{Deserialize, Serialize};
-use std::{
-    fs::File,
-    io::{ErrorKind, Write},
-};
 
 #[derive(Serialize, Deserialize)]
-pub struct ToDo<'a> {
-    id: &'a str,
-    description: &'a str,
+pub struct ToDo {
+    id: String,
+    description: String,
     done: bool,
 }
 
-pub fn save_todo(todo: ToDo) {
-    let json = serde_json::to_string(&todo).unwrap_or_else(|_| {
-        panic!("Error, could not covert to JSON");
-    });
-
-    let file = File::open("db.json").unwrap_or_else(|error| {
-        if error.kind() == ErrorKind::NotFound {
-            File::create("db.json").unwrap_or_else(|error| {
-                panic!("Problem creating a new database: {:?}", error);
-            })
-        } else {
-            panic!("Problem opening the database: {:?}", error);
+impl ToDo {
+    pub fn new(description: &str) -> ToDo {
+        ToDo {
+            id: "123".to_owned(),
+            description: description.to_owned(),
+            done: false,
         }
-    });
+    }
+}
 
-    std::fs::write(
-        "db.json",
-        serde_json::to_string_pretty(&json).unwrap(),
-    )
-    .unwrap();
+pub fn save_todo(todo: ToDo) {
+    let json = serialize_todo(todo);
+
+    std::fs::write(get_db_path(), serde_json::to_string_pretty(&json).unwrap()).unwrap();
+}
+
+fn serialize_todo(todo: ToDo) -> String {
+    serde_json::to_string(&todo).unwrap_or_else(|_| {
+        panic!("Error, could not covert to JSON");
+    })
+}
+
+fn get_db_path() -> String {
+    if cfg!(test) {
+        "test_db.json".to_string()
+    } else {
+        "db.json".to_string()
+    }
 }
 
 #[cfg(test)]
@@ -39,11 +43,7 @@ mod tests {
 
     #[test]
     fn save_a_todo() {
-        let to_do = ToDo {
-            id: "123",
-            description: "Test todo",
-            done: false,
-        };
+        let to_do = ToDo::new("Test description");
         save_todo(to_do);
     }
 }
