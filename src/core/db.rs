@@ -1,8 +1,6 @@
-use serde::{Deserialize, Serialize};
+use rusqlite::{Connection, MappedRows, Result};
 
-#[derive(Serialize, Deserialize)]
 pub struct ToDo {
-    id: String,
     description: String,
     done: bool,
 }
@@ -10,30 +8,67 @@ pub struct ToDo {
 impl ToDo {
     pub fn new(description: &str) -> ToDo {
         ToDo {
-            id: "123".to_owned(),
             description: description.to_owned(),
             done: false,
         }
     }
 }
 
-pub fn save_todo(todo: ToDo) {
-    let json = serialize_todo(todo);
+pub fn get_db_connection() -> Result<Connection> {
+    let conn = Connection::open(get_db_path())?;
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS to_dos (
+             id INTEGER PRIMARY KEY,
+             description TEXT NOT NULL UNIQUE,
+             done BOOL NOT NULL,
+             created TEXT DEFAULT CURRENT_TIMESTAMP 
+         )",
+        [],
+    )?;
 
-    std::fs::write(get_db_path(), serde_json::to_string_pretty(&json).unwrap()).unwrap();
+    Ok(conn)
 }
 
-fn serialize_todo(todo: ToDo) -> String {
-    serde_json::to_string(&todo).unwrap_or_else(|_| {
-        panic!("Error, could not covert to JSON");
-    })
+pub fn get_todos() -> Result<()> {
+    let conn = get_db_connection()?;
+
+    let mut stmt = conn.prepare(
+        "SELECT description, done
+         FROM to_dos;",
+    )?;
+
+    let to_dos = stmt.query_map([], |row| {
+        Ok(ToDo {
+            description: row.get(0)?,
+            done: row.get(1)?,
+        })
+    })?;
+
+    for todo in to_dos {
+        todo.unwrap_or_else(|err| {
+            panic!("Error while unpacking rows in ");
+        });
+    }
+
+    Ok(())
+}
+
+pub fn save_todo(to_do: ToDo) -> Result<()> {
+    let conn = get_db_connection()?;
+
+    conn.execute(
+        "INSERT INTO to_dos (description, done) values (?1, 0)",
+        &[&to_do.description.to_string()],
+    )?;
+
+    Ok(())
 }
 
 fn get_db_path() -> String {
     if cfg!(test) {
-        "test_db.json".to_string()
+        ":memory:".to_string()
     } else {
-        "db.json".to_string()
+        "./db.sql".to_string()
     }
 }
 
@@ -42,8 +77,9 @@ mod tests {
     use crate::core::db::{save_todo, ToDo};
 
     #[test]
-    fn save_a_todo() {
+    fn save_a_todo_is_persistent() {
         let to_do = ToDo::new("Test description");
-        save_todo(to_do);
+        let res = save_todo(to_do);
+        assert_eq!(res, Ok(()));
     }
 }

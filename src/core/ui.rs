@@ -38,43 +38,45 @@ pub fn compose_app_ui(
                 .child(DummyView)
                 .child(buttons),
         )
-        .title("Select a user"),
+        .title("Todo manager"),
     )
 }
 
 pub fn create_app() -> Cursive {
     let mut siv: Cursive = Cursive::default();
-    let select = get_select_view(on_submit);
-    let buttons = get_buttons(add_name, delete_name);
+    let select = get_select_view(on_select);
+    let buttons = get_buttons(add_todo, delete_todo);
     compose_app_ui(&mut siv, select, buttons);
     return siv;
 }
 
-fn on_submit(s: &mut Cursive, name: &str) {
+fn on_select(s: &mut Cursive, desrciption: &str) {
     s.pop_layer();
     s.add_layer(
-        Dialog::text(format!("{}s infor", name))
-            .title("User info")
+        Dialog::text(format!("{}", desrciption))
+            .title("Todo details")
             .button("Close", Cursive::quit),
     );
 }
 
-fn add_name(s: &mut Cursive) {
-    fn ok(s: &mut Cursive, name: &str) {
+fn add_todo(s: &mut Cursive) {
+    fn ok(s: &mut Cursive, description: &str) {
         s.call_on_name("select", |view: &mut SelectView<String>| {
-            db::save_todo(db::ToDo::new(name));
-            view.add_item_str(name);
+            db::save_todo(db::ToDo::new(description)).unwrap_or_else(|err| {
+                panic!("Error while saving to_do: {}", err);
+            });
+            view.add_item_str(description);
         });
         s.pop_layer();
     }
     s.add_layer(
-        Dialog::around(EditView::new().with_name("user_name").fixed_width(10))
-            .title("Add user")
+        Dialog::around(EditView::new().with_name("description").fixed_width(10))
+            .title("Add todo")
             .button("OK", |s| {
-                let name = s
-                    .call_on_name("user_name", |view: &mut EditView| view.get_content())
+                let description = s
+                    .call_on_name("description", |view: &mut EditView| view.get_content())
                     .unwrap();
-                ok(s, &name);
+                ok(s, &description);
             })
             .button("Cancel", |s| {
                 s.pop_layer();
@@ -82,10 +84,10 @@ fn add_name(s: &mut Cursive) {
     );
 }
 
-fn delete_name(s: &mut Cursive) {
+fn delete_todo(s: &mut Cursive) {
     let mut select = s.find_name::<SelectView<String>>("select").unwrap();
     match select.selected_id() {
-        None => s.add_layer(Dialog::info("No user to delete.")),
+        None => s.add_layer(Dialog::info("No todo to delete.")),
         Some(focus) => {
             select.remove_item(focus);
         }
