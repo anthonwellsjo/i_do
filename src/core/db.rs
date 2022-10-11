@@ -29,12 +29,13 @@ pub fn get_db_connection() -> Result<Connection> {
     Ok(conn)
 }
 
-pub fn get_todos() -> Result<()> {
+pub fn get_todos() -> Result<Vec<ToDo>> {
+    println!("Gettting todoes");
     let conn = get_db_connection()?;
 
     let mut stmt = conn.prepare(
         "SELECT description, done
-         FROM to_dos;",
+         FROM to_dos",
     )?;
 
     let to_dos = stmt.query_map([], |row| {
@@ -44,16 +45,24 @@ pub fn get_todos() -> Result<()> {
         })
     })?;
 
+    let mut todiloes: Vec<ToDo> = Vec::new();
+
     for todo in to_dos {
-        todo.unwrap_or_else(|err| {
-            panic!("Error while unpacking rows in ");
-        });
+        let greeting_file = match todo {
+            Ok(file) => file,
+            Err(error) => panic!("Problem opening the file: {:?}", error),
+        };
+        todiloes.push(greeting_file);
     }
 
-    Ok(())
+    for todo in &todiloes {
+        println!("{}", todo.description);
+    }
+
+    Ok(todiloes)
 }
 
-pub fn save_todo(to_do: ToDo) -> Result<()> {
+pub fn save_todo(to_do: ToDo) -> Result<ToDo> {
     let conn = get_db_connection()?;
 
     conn.execute(
@@ -61,7 +70,7 @@ pub fn save_todo(to_do: ToDo) -> Result<()> {
         &[&to_do.description.to_string()],
     )?;
 
-    Ok(())
+    Ok(to_do)
 }
 
 fn get_db_path() -> String {
@@ -74,12 +83,27 @@ fn get_db_path() -> String {
 
 #[cfg(test)]
 mod tests {
-    use crate::core::db::{save_todo, ToDo};
+    use super::{get_db_connection, get_todos, save_todo, ToDo};
 
     #[test]
-    fn save_a_todo_is_persistent() {
-        let to_do = ToDo::new("Test description");
-        let res = save_todo(to_do);
-        assert_eq!(res, Ok(()));
+    fn save_a_todo() {
+        let description = "Test description";
+        let to_do = ToDo::new(description);
+        let res = save_todo(to_do).unwrap();
+        assert_eq!(&res.description, description);
+    }
+
+    #[test]
+    fn save_and_load_todos() {
+        let conn = get_db_connection();
+        let description = "Cut the grass";
+        let description_two = "Call Carl";
+        let to_do = ToDo::new(description);
+        let to_do2 = ToDo::new(description_two);
+        save_todo(to_do, &conn).unwrap();
+        save_todo(to_do2, &conn).unwrap();
+
+        let todos = get_todos().unwrap();
+        // assert!(&todos.iter().any(|x| x.description == description_two));
     }
 }
