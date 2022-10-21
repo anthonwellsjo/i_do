@@ -47,6 +47,7 @@ pub fn create_app() -> Cursive {
     let select = get_select_view(on_select);
     let buttons = get_buttons(add_todo, delete_todo);
     compose_app_ui(&mut siv, select, buttons);
+    render_saved_todos(&mut siv);
     return siv;
 }
 
