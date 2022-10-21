@@ -59,6 +59,16 @@ fn on_select(s: &mut Cursive, desrciption: &str) {
     );
 }
 
+fn render_saved_todos(s: &mut Cursive) {
+    s.call_on_name("select", |view: &mut SelectView<String>| {
+        let todos = get_todos().unwrap_or_else(|_| panic!("Error while getting todos from db"));
+
+        for todo in todos.iter() {
+            view.add_item_str(&todo.description);
+        }
+    });
+}
+
 fn add_todo(s: &mut Cursive) {
     fn ok(s: &mut Cursive, description: &str) {
         s.call_on_name("select", |view: &mut SelectView<String>| {
