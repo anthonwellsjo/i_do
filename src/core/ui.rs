@@ -62,7 +62,8 @@ fn on_select(s: &mut Cursive, desrciption: &str) {
 
 fn render_saved_todos(s: &mut Cursive) {
     s.call_on_name("select", |view: &mut SelectView<String>| {
-        let todos = get_todos().unwrap_or_else(|err| panic!("Error while getting todos from db: {}", err));
+        let todos =
+            get_todos().unwrap_or_else(|err| panic!("Error while getting todos from db: {}", err));
 
         for todo in todos.iter() {
             view.add_item_str(&todo.description);
