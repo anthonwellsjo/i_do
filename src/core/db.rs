@@ -90,7 +90,17 @@ pub fn save_todo_to_db(to_do: ToDo) -> Result<ToDo> {
     Ok(to_do)
 }
 
-pub fn delete_todo_from_db(to_do: usize) -> Result<()> {
+/// Deletes a todo to the database
+/// # Arguments
+/// * `to_do` - In instance of the ToDo struct that will be saved.
+/// # Examples
+/// ```
+/// use core::db::{ToDo, save_todo_to_db, delete_todo_from_db};
+/// let to_do = ToDo::new("Fix the bike wheel");
+/// let res = save_todo_to_db(to_do);
+/// delete_todo_from_db(&todo.description);
+/// ```
+pub fn delete_todo_from_db(description: &str) -> Result<()> {
     let conn = get_db_connection()?;
 
     conn.execute(
