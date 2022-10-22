@@ -105,7 +105,6 @@ pub fn delete_todo_from_db(description: &str) -> Result<()> {
     conn.execute("DELETE FROM to_dos WHERE description=(?1)", &[&description])?;
     conn.close()
         .unwrap_or_else(|_| panic!("Panickin while closing conection."));
-
     Ok(())
 }
 
@@ -144,11 +143,10 @@ mod tests {
         assert!(&todos.iter().any(|x| x.description == description_two));
     }
 
-        #[test]
+    #[test]
     fn save_and_delete_todos_from_db() {
         todo!()
     }
-
 
     #[test]
     #[ignore]
