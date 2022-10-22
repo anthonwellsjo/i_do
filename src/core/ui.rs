@@ -100,9 +100,11 @@ fn delete_todo(s: &mut Cursive) {
     let mut select = s.find_name::<SelectView<String>>("select").unwrap();
     match select.selected_id() {
         None => s.add_layer(Dialog::info("No todo to delete.")),
-        Some(focus) => {
-            select.remove_item(focus);
-            delete_todo_from_db(focus).unwrap_or_else(|err| panic!("Error while deleting todo from db: {}", err));
+        Some(item_id) => {
+            select.remove_item(item_id);
+            let selected_todo = select.get_item(item_id).unwrap();
+            delete_todo_from_db(selected_todo.0)
+                .unwrap_or_else(|err| panic!("Error while deleting todo from db: {}", err));
         }
     }
 }
