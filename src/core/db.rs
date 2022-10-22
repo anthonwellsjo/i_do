@@ -102,12 +102,7 @@ pub fn save_todo_to_db(to_do: ToDo) -> Result<ToDo> {
 /// ```
 pub fn delete_todo_from_db(description: &str) -> Result<()> {
     let conn = get_db_connection()?;
-
-    conn.execute(
-        "DELETE FROM to_dos WHERE description=(?1)",
-        &[&to_do],
-    )?;
-
+    conn.execute("DELETE FROM to_dos WHERE description=(?1)", &[&description])?;
     conn.close()
         .unwrap_or_else(|_| panic!("Panickin while closing conection."));
 
