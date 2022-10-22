@@ -76,7 +76,7 @@ pub fn get_todos() -> Result<Vec<ToDo>> {
 /// let res = save_todo(to_do);
 /// assert_eq!(res, Ok(()));
 /// ```
-pub fn save_todo(to_do: ToDo) -> Result<ToDo> {
+pub fn save_todo_to_db(to_do: ToDo) -> Result<ToDo> {
     let conn = get_db_connection()?;
 
     conn.execute(
