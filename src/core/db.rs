@@ -122,18 +122,18 @@ mod tests {
     fn save_a_todo() {
         let description = "Test description";
         let to_do = ToDo::new(description);
-        let res = save_todo(to_do).unwrap();
+        let res = save_todo_to_db(to_do).unwrap();
         assert_eq!(&res.description, description);
     }
 
     #[test]
-    fn save_and_load_todos() {
+    fn save_and_load_todos_from_db() {
         let description = "Cut the grass";
         let description_two = "Call Carl";
         let to_do = ToDo::new(description);
         let to_do2 = ToDo::new(description_two);
-        save_todo(to_do).unwrap();
-        save_todo(to_do2).unwrap();
+        save_todo_to_db(to_do).unwrap();
+        save_todo_to_db(to_do2).unwrap();
 
         let todos = get_todos().unwrap();
         assert!(&todos.iter().any(|x| x.description == description_two));
