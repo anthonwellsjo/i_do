@@ -62,7 +62,7 @@ fn on_select(s: &mut Cursive, desrciption: &str) {
 
 fn render_saved_todos(s: &mut Cursive) {
     s.call_on_name("select", |view: &mut SelectView<String>| {
-        let todos = get_todos().unwrap_or_else(|_| panic!("Error while getting todos from db"));
+        let todos = get_todos().unwrap_or_else(|err| panic!("Error while getting todos from db: {}", err));
 
         for todo in todos.iter() {
             view.add_item_str(&todo.description);
@@ -73,7 +73,7 @@ fn render_saved_todos(s: &mut Cursive) {
 fn add_todo(s: &mut Cursive) {
     fn ok(s: &mut Cursive, description: &str) {
         s.call_on_name("select", |view: &mut SelectView<String>| {
-            db::save_todo(db::ToDo::new(description)).unwrap_or_else(|err| {
+            db::save_todo_to_db(db::ToDo::new(description)).unwrap_or_else(|err| {
                 panic!("Error while saving to_do: {}", err);
             });
             view.add_item_str(description);
@@ -101,6 +101,7 @@ fn delete_todo(s: &mut Cursive) {
         None => s.add_layer(Dialog::info("No todo to delete.")),
         Some(focus) => {
             select.remove_item(focus);
+            delete_todo_from_db(focus).unwrap_or_else(|err| panic!("Error while deleting todo from db: {}", err));
         }
     }
 }
