@@ -115,7 +115,7 @@ fn get_db_path() -> &'static str {
 #[cfg(test)]
 mod tests {
 
-    use super::{get_todos, save_todo, ToDo, TEST_DB_PATH};
+    use super::{get_todos, save_todo_to_db, ToDo, TEST_DB_PATH};
     use std::fs;
 
     #[test]
