@@ -119,7 +119,10 @@ fn get_db_path() -> &'static str {
 #[cfg(test)]
 mod tests {
 
+    use crate::core::db::delete_todo_from_db;
+
     use super::{get_todos, save_todo_to_db, ToDo, TEST_DB_PATH};
+    use rand::Rng;
     use std::fs;
 
     #[test]
