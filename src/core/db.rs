@@ -71,7 +71,7 @@ pub fn get_todos() -> Result<Vec<ToDo>> {
 /// * `to_do` - In instance of the ToDo struct that will be saved.
 /// # Examples
 /// ```
-/// use core::db::{ToDo, save_todo};
+/// use core::db::{ToDo, save_todo_to_db};
 /// let to_do = ToDo::new("Fix the bike wheel");
 /// let res = save_todo(to_do);
 /// assert_eq!(res, Ok(()));
