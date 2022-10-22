@@ -90,6 +90,20 @@ pub fn save_todo_to_db(to_do: ToDo) -> Result<ToDo> {
     Ok(to_do)
 }
 
+pub fn delete_todo_from_db(to_do: usize) -> Result<()> {
+    let conn = get_db_connection()?;
+
+    conn.execute(
+        "DELETE FROM to_dos WHERE description=(?1)",
+        &[&to_do],
+    )?;
+
+    conn.close()
+        .unwrap_or_else(|_| panic!("Panickin while closing conection."));
+
+    Ok(())
+}
+
 fn get_db_path() -> &'static str {
     if cfg!(test) {
         &TEST_DB_PATH
