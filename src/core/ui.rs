@@ -4,7 +4,7 @@ use cursive::views::{
 };
 use cursive::Cursive;
 
-use super::db::{self, get_todos};
+use super::db::{self, get_todos, delete_todo_from_db };
 
 pub fn get_select_view(
     on_submit: fn(s: &mut Cursive, name: &str),
