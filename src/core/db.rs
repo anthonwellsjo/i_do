@@ -4,8 +4,8 @@ static TEST_DB_PATH: &str = "./tests.sql";
 static DB_PATH: &str = "./db.sql";
 
 pub struct ToDo {
-    description: String,
-    done: bool,
+    pub description: String,
+    pub done: bool,
 }
 
 impl ToDo {
