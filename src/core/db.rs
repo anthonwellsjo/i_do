@@ -73,7 +73,7 @@ pub fn get_todos() -> Result<Vec<ToDo>> {
 /// ```
 /// use core::db::{ToDo, save_todo_to_db};
 /// let to_do = ToDo::new("Fix the bike wheel");
-/// let res = save_todo(to_do);
+/// let res = save_todo_to_db(to_do);
 /// assert_eq!(res, Ok(()));
 /// ```
 pub fn save_todo_to_db(to_do: ToDo) -> Result<ToDo> {
