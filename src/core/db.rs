@@ -153,10 +153,17 @@ mod tests {
         let to_do = ToDo::new(&description);
         save_todo_to_db(to_do).unwrap();
         let todos = get_todos().unwrap();
+        let todo_from_db = &todos.iter().find(|i| i.description == description);
         assert!(&todos.iter().any(|x| x.description == description));
-        delete_todo_from_db(&description);
+        assert_eq!(todo_from_db.is_some(), true);
+
+        //Act: Delete todo
+        let resp = delete_todo_from_db(&description);
         let todos = get_todos().unwrap();
         let todo_from_db = &todos.iter().find(|i| i.description == description);
+
+        //Assert
+        assert_eq!(resp, Ok(()));
         assert_eq!(todo_from_db.is_some(), false);
     }
 
