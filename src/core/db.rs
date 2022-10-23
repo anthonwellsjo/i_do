@@ -170,4 +170,15 @@ mod tests {
         }
         remove_test_db();
     }
+
+    /// Contains common util functions and properties for testing
+    struct TestUtils {}
+
+    impl TestUtils {
+        fn create_rnd_string() -> String {
+            let mut rng = rand::thread_rng();
+            let rand_num: u16 = rng.gen();
+            rand_num.to_string()
+        }
+    }
 }
