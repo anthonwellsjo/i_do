@@ -135,10 +135,10 @@ mod tests {
 
     #[test]
     fn save_and_load_todos_from_db() {
-        let description = "Cut the grass";
-        let description_two = "Call Carl";
-        let to_do = ToDo::new(description);
-        let to_do2 = ToDo::new(description_two);
+        let description = TestUtils::create_rnd_string();
+        let description_two = TestUtils::create_rnd_string();
+        let to_do = ToDo::new(&description);
+        let to_do2 = ToDo::new(&description_two);
         save_todo_to_db(to_do).unwrap();
         save_todo_to_db(to_do2).unwrap();
 
@@ -148,9 +148,8 @@ mod tests {
 
     #[test]
     fn save_and_delete_todos_from_db() {
-        let mut rng = rand::thread_rng();
-        let n2: u16 = rng.gen();
-        let description = n2.to_string();
+        //Arrange: Create and save todos to db + assert
+        let description = TestUtils::create_rnd_string();
         let to_do = ToDo::new(&description);
         save_todo_to_db(to_do).unwrap();
         let todos = get_todos().unwrap();
