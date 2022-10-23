@@ -108,6 +108,7 @@ pub fn delete_todo_from_db(description: &str) -> Result<()> {
     Ok(())
 }
 
+/// Gets db-path which depends on wether we are running a test or not.
 fn get_db_path() -> &'static str {
     if cfg!(test) {
         &TEST_DB_PATH
