@@ -101,10 +101,12 @@ fn delete_todo(s: &mut Cursive) {
     match select.selected_id() {
         None => s.add_layer(Dialog::info("No todo to delete.")),
         Some(item_id) => {
-            select.remove_item(item_id);
-            let selected_todo = select.get_item(item_id).unwrap();
+            let selected_todo = select
+                .get_item(item_id)
+                .unwrap_or_else(|| panic!("Error while fetching todo that should e deleted."));
             delete_todo_from_db(selected_todo.0)
                 .unwrap_or_else(|err| panic!("Error while deleting todo from db: {}", err));
+            select.remove_item(item_id);
         }
     }
 }
