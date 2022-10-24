@@ -30,7 +30,6 @@ pub fn get_db_connection() -> Result<Connection> {
          )",
         [],
     )?;
-
     Ok(conn)
 }
 
