@@ -17,6 +17,8 @@ impl ToDo {
     }
 }
 
+///  Gets connection to DB. This function will create a new DB if
+///  not already present
 pub fn get_db_connection() -> Result<Connection> {
     let conn = Connection::open(get_db_path())?;
     conn.execute(
